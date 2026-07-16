@@ -256,6 +256,163 @@ body {
   color: #606880; font-size: 0.8rem;
 }
 
+/* ===== Search Bar ===== */
+.search-section {
+  position: relative; z-index: 1;
+  max-width: 600px; margin: 0 auto 48px; padding: 0 24px;
+}
+.search-wrap {
+  display: flex; align-items: center; gap: 0;
+  background: rgba(15,20,50,0.9);
+  border: 1px solid rgba(30,144,255,0.25);
+  border-radius: 30px; overflow: hidden;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+.search-wrap:focus-within {
+  border-color: #4da6ff;
+  box-shadow: 0 0 20px rgba(30,144,255,0.15);
+}
+.search-wrap input {
+  flex: 1; background: none; border: none;
+  padding: 14px 20px; font-size: 0.95rem;
+  color: #e0e0e0; outline: none;
+}
+.search-wrap input::placeholder { color: #606880; }
+.search-wrap button {
+  background: none; border: none; padding: 14px 18px;
+  font-size: 1.2rem; cursor: pointer; color: #4da6ff;
+  transition: color 0.2s;
+}
+.search-wrap button:hover { color: #ffc107; }
+.search-results {
+  margin-top: 12px; display: none;
+  background: rgba(15,20,50,0.95);
+  border: 1px solid rgba(30,144,255,0.15);
+  border-radius: 12px; padding: 8px; max-height: 280px; overflow-y: auto;
+}
+.search-results.show { display: block; }
+.search-result-item {
+  padding: 10px 14px; border-radius: 8px; cursor: pointer;
+  transition: background 0.2s; color: #c0c8d8; font-size: 0.9rem;
+}
+.search-result-item:hover { background: rgba(30,144,255,0.08); color: #fff; }
+.search-result-item .highlight { color: #ffc107; font-weight: 600; }
+.search-no-result {
+  padding: 16px; text-align: center; color: #606880; font-size: 0.9rem;
+}
+
+/* ===== Tag Cloud ===== */
+.tagcloud-section {
+  position: relative; z-index: 1;
+  max-width: 900px; margin: 0 auto; padding: 0 24px 80px;
+}
+.tagcloud {
+  display: flex; flex-wrap: wrap; justify-content: center;
+  gap: 10px;
+}
+.tag {
+  padding: 8px 18px; border-radius: 25px;
+  border: 1px solid rgba(30,144,255,0.2);
+  background: rgba(30,144,255,0.04);
+  color: #b0b8d0; font-size: 0.9rem;
+  cursor: pointer; transition: all 0.25s;
+  white-space: nowrap;
+}
+.tag:hover, .tag.active {
+  background: rgba(30,144,255,0.15);
+  border-color: #4da6ff; color: #4da6ff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(30,144,255,0.15);
+}
+.tag.size-s { font-size: 0.78rem; padding: 6px 14px; }
+.tag.size-m { font-size: 0.9rem; }
+.tag.size-l { font-size: 1.05rem; font-weight: 600; }
+
+/* ===== Fun Facts Section ===== */
+.funfacts-section {
+  position: relative; z-index: 1;
+  max-width: 1100px; margin: 0 auto; padding: 40px 24px 80px;
+}
+.funfacts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+.funfact-card {
+  background: rgba(15,20,50,0.7);
+  border: 1px solid rgba(255,193,7,0.1);
+  border-left: 3px solid rgba(255,193,7,0.35);
+  border-radius: 0 12px 12px 0;
+  padding: 24px 20px;
+  cursor: pointer; transition: all 0.3s;
+  position: relative;
+}
+.funfact-card:hover {
+  border-left-color: #ffc107;
+  background: rgba(255,193,7,0.05);
+  transform: translateX(3px);
+}
+.funfact-card .ff-emoji { font-size: 1.6rem; margin-bottom: 8px; display: block; }
+.funfact-card h4 { font-size: 1rem; color: #ffc107; margin-bottom: 6px; }
+.funfact-card p { font-size: 0.85rem; color: #9098b8; line-height: 1.7; }
+.funfact-card .ff-expand {
+  margin-top: 10px; font-size: 0.8rem; color: #4da6ff;
+}
+.funfact-detail {
+  display: none; margin-top: 8px;
+  padding-top: 10px; border-top: 1px solid rgba(30,144,255,0.1);
+  font-size: 0.85rem; color: #c0c8d8; line-height: 1.8;
+}
+.funfact-detail.show { display: block; }
+
+/* ===== Like Button ===== */
+.like-widget {
+  position: fixed; bottom: 28px; right: 28px; z-index: 150;
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+}
+.like-btn {
+  width: 56px; height: 56px; border-radius: 50%;
+  border: 2px solid rgba(255,107,53,0.3);
+  background: rgba(15,20,50,0.92);
+  color: #ff6b35; font-size: 1.5rem;
+  cursor: pointer; transition: all 0.3s;
+  display: flex; align-items: center; justify-content: center;
+  backdrop-filter: blur(8px);
+}
+.like-btn:hover {
+  border-color: #ff6b35; background: rgba(255,107,53,0.12);
+  transform: scale(1.08); box-shadow: 0 6px 24px rgba(255,107,53,0.25);
+}
+.like-btn.liked {
+  animation: likePop 0.5s ease;
+  border-color: #ff6b35; background: rgba(255,107,53,0.2);
+}
+@keyframes likePop {
+  0% { transform: scale(1); }
+  30% { transform: scale(1.25); }
+  60% { transform: scale(0.9); }
+  100% { transform: scale(1); }
+}
+.like-count {
+  font-size: 0.85rem; font-weight: 700; color: #ff6b35;
+  text-align: center;
+}
+.like-label {
+  font-size: 0.7rem; color: #9098b8; text-align: center;
+}
+.like-toast {
+  position: fixed; bottom: 100px; right: 28px; z-index: 151;
+  background: rgba(255,107,53,0.15);
+  border: 1px solid rgba(255,107,53,0.3);
+  border-radius: 12px; padding: 10px 18px;
+  color: #ff6b35; font-size: 0.85rem;
+  opacity: 0; transform: translateY(10px);
+  transition: all 0.4s; pointer-events: none;
+}
+.like-toast.show {
+  opacity: 1; transform: translateY(0);
+}
+
 /* ===== Responsive ===== */
 @media (max-width: 768px) {
   .hero { padding: 100px 20px 60px; }
@@ -263,9 +420,13 @@ body {
   .hero p { font-size: 1rem; }
   .hero-stats { gap: 24px; }
   .cards-grid { grid-template-columns: 1fr; }
+  .funfacts-grid { grid-template-columns: 1fr; }
   .nav-links { gap: 14px; }
   .nav-links a { font-size: 0.8rem; }
   .modal { padding: 28px 20px; }
+  .like-widget { bottom: 16px; right: 16px; }
+  .like-btn { width: 48px; height: 48px; font-size: 1.3rem; }
+  .tag { font-size: 0.8rem; padding: 6px 14px; }
 }
 </style>
 </head>
@@ -279,7 +440,10 @@ body {
   <div class="nav-inner">
     <div class="nav-logo">⚡ 电气<span>知多少</span></div>
     <ul class="nav-links">
+      <li><a href="#search">🔍 搜索</a></li>
       <li><a href="#topics">科普主题</a></li>
+      <li><a href="#tagcloud">标签云</a></li>
+      <li><a href="#funfacts">🐦 冷知识</a></li>
       <li><a href="#quiz">知识测验</a></li>
       <li><a href="#about">关于我们</a></li>
     </ul>
@@ -294,7 +458,8 @@ body {
   <div class="hero-stats">
     <div class="hero-stat"><div class="num">6</div><div class="label">科普主题</div></div>
     <div class="hero-stat"><div class="num">8</div><div class="label">趣味问答</div></div>
-    <div class="hero-stat"><div class="num">∞</div><div class="label">生活应用</div></div>
+    <div class="hero-stat"><div class="num">8</div><div class="label">冷知识</div></div>
+    <div class="hero-stat"><div class="num">26</div><div class="label">关键词云</div></div>
   </div>
 </section>
 
@@ -357,6 +522,37 @@ body {
   </div>
 </section>
 
+<!-- ===== Search Section ===== -->
+<section class="search-section" id="search">
+  <div class="search-wrap">
+    <input type="text" id="searchInput" placeholder="搜索电气知识关键词…（如：电压、锂电、辐射、单片机）" oninput="doSearch()" onfocus="doSearch()">
+    <button onclick="doSearch()">🔍</button>
+  </div>
+  <div class="search-results" id="searchResults"></div>
+</section>
+
+<!-- ===== Tag Cloud Section ===== -->
+<section class="tagcloud-section" id="tagcloud">
+  <div class="section-title">
+    <h2>☁️ 知识关键词云</h2>
+    <p>点击标签，探索你感兴趣的电气知识点</p>
+  </div>
+  <div class="tagcloud" id="tagCloud">
+    <!-- Generated by JS -->
+  </div>
+</section>
+
+<!-- ===== Fun Facts Section ===== -->
+<section class="funfacts-section" id="funfacts">
+  <div class="section-title">
+    <h2>🐦 电气冷知识</h2>
+    <p>这些有趣的电气小知识，你可能从来没听说过</p>
+  </div>
+  <div class="funfacts-grid" id="funfactsGrid">
+    <!-- Generated by JS -->
+  </div>
+</section>
+
 <!-- Quiz Section -->
 <section class="quiz-section" id="quiz">
   <div class="section-title">
@@ -382,6 +578,14 @@ body {
     <div class="team-tag">🏫 中国石油大学（华东） · 新能源学院 · 电气工程</div>
   </div>
 </section>
+
+<!-- Like Button Widget -->
+<div class="like-widget">
+  <button class="like-btn" id="likeBtn" onclick="doLike()" title="如果觉得有用，点个赞吧！">👍</button>
+  <div class="like-count" id="likeCount">0</div>
+  <div class="like-label">有帮助</div>
+</div>
+<div class="like-toast" id="likeToast">感谢你的点赞！💙</div>
 
 <!-- Footer -->
 <div class="footer">
@@ -819,6 +1023,211 @@ function restartQuiz() {
 
 // Init
 loadQuestion();
+
+// ===== Search =====
+const searchIndex = [];
+(function buildSearchIndex() {
+  for (const [id, t] of Object.entries(topics)) {
+    let allText = t.title + ' ' + t.subtitle + ' ';
+    for (const s of t.sections) {
+      if (s.text) allText += s.text + ' ';
+    }
+    searchIndex.push({ id: parseInt(id), title: t.title, subtitle: t.subtitle, icon: t.icon, text: allText });
+  }
+  // Also index fun facts
+  funFacts.forEach((f, i) => {
+    searchIndex.push({ id: 'ff' + i, title: f.title, subtitle: '冷知识', icon: f.emoji, text: f.brief + ' ' + f.detail });
+  });
+})();
+
+function doSearch() {
+  const query = document.getElementById('searchInput').value.trim().toLowerCase();
+  const container = document.getElementById('searchResults');
+  if (!query) {
+    container.classList.remove('show');
+    container.innerHTML = '';
+    return;
+  }
+  const results = [];
+  for (const item of searchIndex) {
+    const idx = item.text.toLowerCase().indexOf(query);
+    if (idx >= 0) {
+      // Extract context around match
+      const start = Math.max(0, idx - 15);
+      const end = Math.min(item.text.length, idx + query.length + 40);
+      let snippet = item.text.substring(start, end);
+      if (start > 0) snippet = '...' + snippet;
+      if (end < item.text.length) snippet += '...';
+      results.push({ ...item, snippet, matchIdx: snippet.toLowerCase().indexOf(query) });
+    }
+  }
+  if (results.length === 0) {
+    container.innerHTML = '<div class="search-no-result">😕 没有找到相关内容，试试搜"电压""锂电""辐射"</div>';
+  } else {
+    container.innerHTML = results.slice(0, 8).map(r => {
+      const pre = r.snippet.substring(0, r.matchIdx);
+      const match = r.snippet.substring(r.matchIdx, r.matchIdx + query.length);
+      const post = r.snippet.substring(r.matchIdx + query.length);
+      const highlighted = pre + '<span class="highlight">' + match + '</span>' + post;
+      return `<div class="search-result-item" onclick="searchClick('${r.id}')">
+        <strong>${r.icon} ${r.title}</strong> · ${r.subtitle}
+        <div style="font-size:0.8rem;color:#9098b8;margin-top:2px;">${highlighted}</div>
+      </div>`;
+    }).join('');
+  }
+  container.classList.add('show');
+}
+
+function searchClick(id) {
+  document.getElementById('searchInput').value = '';
+  document.getElementById('searchResults').classList.remove('show');
+  document.getElementById('searchResults').innerHTML = '';
+  if (typeof id === 'string' && id.startsWith('ff')) {
+    const fi = parseInt(id.replace('ff', ''));
+    document.getElementById('funfacts').scrollIntoView({ behavior: 'smooth' });
+    setTimeout(() => {
+      const card = document.querySelectorAll('.funfact-card')[fi];
+      if (card) { card.scrollIntoView({ behavior: 'smooth' }); toggleFunFact(fi); }
+    }, 400);
+  } else {
+    openTopic(parseInt(id));
+  }
+}
+
+// Close search on outside click
+document.addEventListener('click', e => {
+  if (!e.target.closest('.search-section')) {
+    document.getElementById('searchResults').classList.remove('show');
+  }
+});
+
+// ===== Tag Cloud =====
+const tagCloudData = [
+  { label: '交流电 AC', size: 'l', topic: 1 }, { label: '直流电 DC', size: 'm', topic: 2 },
+  { label: '特高压输电', size: 'l', topic: 1 }, { label: '电磁感应', size: 'm', topic: 1 },
+  { label: '新能源发电', size: 'm', topic: 1 }, { label: 'USB-PD', size: 'l', topic: 2 },
+  { label: 'GaN 氮化镓', size: 'l', topic: 2 }, { label: 'PWM 脉宽调制', size: 'm', topic: 2 },
+  { label: '整流滤波', size: 's', topic: 2 }, { label: 'MCU 单片机', size: 'l', topic: 3 },
+  { label: '传感器', size: 'm', topic: 3 }, { label: '嵌入式系统', size: 'm', topic: 3 },
+  { label: 'ESP32', size: 's', topic: 4 }, { label: 'IoT 物联网', size: 'l', topic: 4 },
+  { label: 'MQTT 协议', size: 'm', topic: 4 }, { label: '语音识别', size: 's', topic: 4 },
+  { label: 'WiFi 模组', size: 'm', topic: 4 }, { label: 'Matter 协议', size: 's', topic: 4 },
+  { label: '电离辐射', size: 'l', topic: 5 }, { label: '电磁波频谱', size: 'm', topic: 5 },
+  { label: 'SAR 比吸收率', size: 's', topic: 5 }, { label: '5G 基站', size: 'm', topic: 5 },
+  { label: '锂离子电池', size: 'l', topic: 6 }, { label: '热失控', size: 'm', topic: 6 },
+  { label: 'BMS 管理系统', size: 's', topic: 6 }, { label: '快充安全', size: 'm', topic: 6 },
+  { label: '安全用电', size: 'l', topic: 1 }, { label: '电力系统', size: 'm', topic: 1 },
+];
+
+function renderTagCloud() {
+  const container = document.getElementById('tagCloud');
+  container.innerHTML = tagCloudData.map(t =>
+    `<span class="tag size-${t.size}" onclick="openTopic(${t.topic})" title="点击查看：${topics[t.topic].title}">${t.label}</span>`
+  ).join('');
+}
+renderTagCloud();
+
+// ===== Fun Facts / Cold Knowledge =====
+const funFacts = [
+  {
+    emoji: '🐦', title: '小鸟站电线为什么不会触电？',
+    brief: '小型鸟类站在一根电线上完全安全——因为它们两脚之间的电压差几乎为零。但大型鸟类就没那么幸运了……',
+    detail: '触电需要电流在身体中形成回路。小鸟站在同一根电线上，两脚间距很小，两点之间的电压差微乎其微，电流不会流经身体。但大型猛禽（鹰、雕、鹳等）翼展可达1.5-3米，在起飞或降落时可能同时触碰两根不同电压的导线（火线与零线，或不同相线），形成致命回路。此外，它们在电线杆上筑巢、排粪也会污染绝缘子，引发短路跳闸。这在高原"西电东送"工程中是个严重问题——高原树木稀少，电线杆成了最"抢手"的筑巢点。',
+  },
+  {
+    emoji: '🏗️', title: '招鸟架：工程师的暖心解决方案',
+    brief: '为了保护大型鸟类同时保障输电安全，工程师们在电线杆上方设计了"招鸟架"——比电线杆更高、更安全、更吸引鸟类的专属筑巢平台。',
+    detail: '招鸟架通常比电线高出2-5米，设有三角形或平台式结构，用绝缘材料与带电线路隔离。鸟类会优先选择更高、视野更好的招鸟架筑巢，从而远离危险的电线。国家电网在青藏高原、内蒙古等地的输电线路已大规模安装招鸟架和人工鸟巢，显著降低了鸟类触电事故。这体现了电力工程与生态保护的巧妙平衡——科技不是与自然对抗，而是为自然留出空间。',
+  },
+  {
+    emoji: '🧲', title: '你站在地球上，头上顶着220V？',
+    brief: '地球表面和大气电离层之间存在约30万伏的电压差！大气电场强度约100V/m，你每高出地面1米，电势就升高约100V。',
+    detail: '这是一个正常的自然现象。地球带负电荷，电离层带正电荷，两者之间形成了巨大的天然"电容器"。你从1楼走到30楼（约100米），头顶的电势差增加了约1万伏！但这不危险，因为大气是绝缘体，几乎没有电流流过你的身体。雷暴天气时，云层中的电荷分布会极大扰动这个电场——当局部电场强度超过空气的击穿强度（约300万V/m），就会产生闪电。',
+  },
+  {
+    emoji: '⚡', title: '闪电的温度是太阳表面的5倍',
+    brief: '一道闪电的核心温度可达30000°C，而太阳表面"只有"约5500°C。闪电在不到1毫秒内将空气加热到比太阳更热的程度，这就是为什么我们听到雷声——急剧膨胀的空气产生了冲击波。',
+    detail: '闪电的电压可达1亿到10亿伏，电流峰值达3万到30万安培。为什么被雷劈的人有时能幸存？因为闪电持续时间极短（微秒级），且电流主要在皮肤表面传导（趋肤效应）。不过，全球每年仍有约2.4万人因雷击死亡。安全提示：雷雨天不要站在空旷高处、不要躲在大树下、不要在户外打有线电话，车内是安全的（法拉第笼效应）。',
+  },
+  {
+    emoji: '💡', title: 'LED灯泡的发光原理和爱迪生的灯泡完全不同',
+    brief: '爱迪生的白炽灯是靠钨丝加热到2000°C发光（90%以上电能变成了热），而LED灯靠的是半导体PN结中电子与空穴复合直接发光——几乎不发热，能效提高5-10倍。',
+    detail: 'LED的发光原理叫"电致发光"：在半导体PN结中，电子从高能级跃迁到低能级时释放光子。不同半导体材料发出不同颜色的光——氮化镓(GaN)发蓝光，磷化铝镓铟(AlGaInP)发红光。白光LED其实是蓝光LED+黄色荧光粉的组合：蓝光激发荧光粉产生黄光，蓝黄混合看起来就是白色。2014年，三位日本科学家因发明高效蓝光LED获得诺贝尔物理学奖——没有蓝光LED，就没有今天的节能照明。',
+  },
+  {
+    emoji: '🔌', title: 'USB-C 接口为什么正反都能插？',
+    brief: 'USB-C的24个引脚在物理上完全对称——无论你怎么翻转插头，触点的排列顺序都是一样的。这得益于巧妙的中线对称设计和CC引脚自动检测机制。',
+    detail: 'USB-C内部有24个引脚，排成上下两排各12个。上排从左到右和下排从右到左的引脚定义完全镜像对称。当你插入时，接口上的CC引脚会检测方向，芯片自动切换信号路由。USB-C能同时传输：数据（最高40Gbps，Thunderbolt 4）、视频（DisplayPort Alt Mode）、音频、以及最高240W的电力——一根线搞定所有，这就是为什么现在几乎所有设备都在换USB-C。',
+  },
+  {
+    emoji: '🔋', title: '一节5号电池能杀死一个成年人吗？',
+    brief: '不能直接电死，但短路后烧红可以烫伤你。一节5号电池只有1.5V，远低于人体安全电压36V。但如果你把9V电池放进装钥匙的口袋——金属短路会让电池在几秒内烧得滚烫！',
+    detail: '人体电阻通常在1000-100000Ω之间（干燥皮肤约10万欧，湿润约1000欧）。1.5V / 1000Ω = 0.0015A = 1.5mA，远低于可感知阈值（约5-10mA）。致命电流通常需要100mA以上流经心脏。但电压越高越危险：家用220V可以致命，高压线更是绝对不可靠近。安全电压被定义为36V以下（中国标准），这就是为什么充电宝/手机的5V/9V/20V低压不会电到你——但它们的锂电池短路起火的危险是另一回事。',
+  },
+  {
+    emoji: '🌍', title: '一度电能让电动汽车跑多远？',
+    brief: '一度电（1千瓦时）能让一辆典型电动轿车行驶约6-8公里——相当于汽油车0.1升汽油的里程。但一度电的成本约0.5-0.6元，远低于同等里程的汽油费用。',
+    detail: '电动汽车能效极高的原因：电机效率可达90%以上（汽油机热效率仅30-40%，大部分能量变成废热）。以特斯拉Model 3为例，电池容量约60kWh，续航约500km，平均12kWh/100km。充满需要60度电 × 0.6元/度 ≈ 36元——跑500公里。同等里程汽油车大约需要30-35升汽油 × 8元/升 ≈ 240-280元。不过，电池生产过程中的碳排放和废旧电池回收仍是需要持续优化的课题。',
+  },
+];
+
+function renderFunFacts() {
+  const container = document.getElementById('funfactsGrid');
+  container.innerHTML = funFacts.map((f, i) => `
+    <div class="funfact-card" id="ffcard${i}">
+      <span class="ff-emoji">${f.emoji}</span>
+      <h4>${f.title}</h4>
+      <p>${f.brief}</p>
+      <div class="funfact-detail" id="ffdetail${i}">${f.detail}</div>
+      <div class="ff-expand" id="ffexpand${i}" onclick="event.stopPropagation(); toggleFunFact(${i})">
+        👆 点击展开更多
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleFunFact(i) {
+  const detail = document.getElementById('ffdetail' + i);
+  const expand = document.getElementById('ffexpand' + i);
+  if (detail.classList.contains('show')) {
+    detail.classList.remove('show');
+    expand.innerHTML = '👆 点击展开更多';
+  } else {
+    detail.classList.add('show');
+    expand.innerHTML = '👆 收起';
+  }
+}
+
+renderFunFacts();
+
+// ===== Like Button =====
+function doLike() {
+  const key = 'elec_knowledge_likes';
+  let likes = parseInt(localStorage.getItem(key) || '0');
+  likes++;
+  localStorage.setItem(key, likes.toString());
+  updateLikeDisplay(likes);
+  // Animate
+  const btn = document.getElementById('likeBtn');
+  btn.classList.remove('liked');
+  void btn.offsetWidth;
+  btn.classList.add('liked');
+  // Toast
+  const toast = document.getElementById('likeToast');
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2000);
+}
+
+function updateLikeDisplay(count) {
+  document.getElementById('likeCount').textContent = count;
+}
+
+// Load saved likes
+(function initLikes() {
+  const key = 'elec_knowledge_likes';
+  let likes = parseInt(localStorage.getItem(key) || '0');
+  updateLikeDisplay(likes);
+})();
 
 // Keyboard ESC to close modal
 document.addEventListener('keydown', e => {
