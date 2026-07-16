@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>电气知多少 — 生活中的电气知识科普</title>
+<style>
+/* ===== Reset & Base ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+  background: #0a0e27;
+  color: #e0e0e0;
+  line-height: 1.8;
+  overflow-x: hidden;
+}
+
+/* ===== Animated Background ===== */
+.bg-grid {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background-image:
+    linear-gradient(rgba(30,144,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(30,144,255,0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  z-index: 0; pointer-events: none;
+}
+.bg-glow {
+  position: fixed; top: -300px; left: 50%; transform: translateX(-50%);
+  width: 800px; height: 800px;
+  background: radial-gradient(circle, rgba(30,144,255,0.08) 0%, transparent 70%);
+  z-index: 0; pointer-events: none;
+}
+
+/* ===== Navigation ===== */
+.nav {
+  position: fixed; top: 0; width: 100%; z-index: 100;
+  background: rgba(10,14,39,0.92); backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(30,144,255,0.15);
+  padding: 0 24px;
+}
+.nav-inner {
+  max-width: 1100px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 56px;
+}
+.nav-logo { font-size: 1.1rem; font-weight: 700; color: #4da6ff; }
+.nav-logo span { color: #ffc107; }
+.nav-links { display: flex; gap: 24px; list-style: none; }
+.nav-links a {
+  color: #b0b8d0; text-decoration: none; font-size: 0.9rem;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: #4da6ff; }
+
+/* ===== Hero ===== */
+.hero {
+  position: relative; z-index: 1;
+  text-align: center; padding: 120px 24px 80px;
+  max-width: 800px; margin: 0 auto;
+}
+.hero-badge {
+  display: inline-block; padding: 6px 20px;
+  border: 1px solid rgba(30,144,255,0.4); border-radius: 30px;
+  font-size: 0.85rem; color: #4da6ff; margin-bottom: 24px;
+  background: rgba(30,144,255,0.08);
+}
+.hero h1 {
+  font-size: 2.6rem; font-weight: 800; color: #fff;
+  margin-bottom: 16px; letter-spacing: 1px;
+}
+.hero h1 .accent { color: #ffc107; }
+.hero p {
+  font-size: 1.15rem; color: #9098b8; max-width: 600px; margin: 0 auto 36px;
+}
+.hero-stats {
+  display: flex; justify-content: center; gap: 48px; flex-wrap: wrap;
+}
+.hero-stat { text-align: center; }
+.hero-stat .num { font-size: 1.8rem; font-weight: 800; color: #ffc107; }
+.hero-stat .label { font-size: 0.85rem; color: #9098b8; margin-top: 4px; }
+
+/* ===== Section Titles ===== */
+.section-title {
+  text-align: center; margin-bottom: 48px;
+}
+.section-title h2 {
+  font-size: 1.8rem; font-weight: 700; color: #fff; margin-bottom: 8px;
+}
+.section-title p { color: #9098b8; font-size: 0.95rem; }
+
+/* ===== Topic Cards Grid ===== */
+.topics-section {
+  position: relative; z-index: 1;
+  max-width: 1100px; margin: 0 auto; padding: 40px 24px 80px;
+}
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px;
+}
+.card {
+  background: rgba(15,20,50,0.8);
+  border: 1px solid rgba(30,144,255,0.12);
+  border-radius: 16px; padding: 32px 28px;
+  cursor: pointer; transition: all 0.3s;
+  position: relative; overflow: hidden;
+}
+.card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(30,144,255,0.4);
+  box-shadow: 0 12px 40px rgba(30,144,255,0.1);
+}
+.card::before {
+  content: ''; position: absolute; top: 0; left: 0;
+  width: 100%; height: 3px;
+  background: linear-gradient(90deg, #1e90ff, #ffc107);
+  opacity: 0; transition: opacity 0.3s;
+}
+.card:hover::before { opacity: 1; }
+.card-icon { font-size: 2.4rem; margin-bottom: 16px; }
+.card h3 { font-size: 1.2rem; font-weight: 700; color: #fff; margin-bottom: 8px; }
+.card p { font-size: 0.9rem; color: #9098b8; }
+.card-tag {
+  display: inline-block; margin-top: 12px; padding: 3px 12px;
+  font-size: 0.75rem; border-radius: 20px;
+  background: rgba(30,144,255,0.1); color: #4da6ff;
+}
+
+/* ===== Detail Modal ===== */
+.modal-overlay {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(5,8,20,0.92); z-index: 200;
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px;
+  opacity: 0; pointer-events: none; transition: opacity 0.3s;
+}
+.modal-overlay.active { opacity: 1; pointer-events: all; }
+.modal {
+  background: #111640; border: 1px solid rgba(30,144,255,0.2);
+  border-radius: 20px; max-width: 700px; width: 100%;
+  max-height: 85vh; overflow-y: auto; padding: 40px 32px;
+  position: relative;
+}
+.modal-close {
+  position: absolute; top: 16px; right: 20px;
+  background: none; border: none; color: #9098b8;
+  font-size: 1.6rem; cursor: pointer; line-height: 1;
+  transition: color 0.2s;
+}
+.modal-close:hover { color: #fff; }
+.modal h2 { font-size: 1.6rem; color: #fff; margin-bottom: 8px; }
+.modal .subtitle { color: #4da6ff; font-size: 0.9rem; margin-bottom: 24px; }
+.modal h3 { color: #ffc107; font-size: 1.05rem; margin: 24px 0 10px; }
+.modal p, .modal li { color: #c0c8d8; font-size: 0.95rem; }
+.modal ul { padding-left: 20px; margin: 8px 0; }
+.modal li { margin-bottom: 6px; }
+
+/* Diagram Box */
+.diagram {
+  background: rgba(30,144,255,0.06); border: 1px solid rgba(30,144,255,0.15);
+  border-radius: 12px; padding: 24px; margin: 20px 0;
+  text-align: center; overflow-x: auto;
+}
+.diagram svg { max-width: 100%; }
+.diagram-label {
+  font-size: 0.8rem; color: #9098b8; margin-top: 8px;
+}
+
+/* ===== Quiz Section ===== */
+.quiz-section {
+  position: relative; z-index: 1;
+  max-width: 800px; margin: 0 auto; padding: 40px 24px 80px;
+}
+.quiz-card {
+  background: rgba(15,20,50,0.8);
+  border: 1px solid rgba(30,144,255,0.12);
+  border-radius: 16px; padding: 36px 32px;
+}
+.quiz-progress {
+  font-size: 0.85rem; color: #9098b8; margin-bottom: 16px;
+}
+.quiz-question {
+  font-size: 1.2rem; font-weight: 600; color: #fff; margin-bottom: 24px;
+}
+.quiz-options { display: flex; flex-direction: column; gap: 10px; }
+.quiz-option {
+  padding: 14px 20px; border-radius: 10px; cursor: pointer;
+  border: 1px solid rgba(30,144,255,0.2);
+  background: rgba(30,144,255,0.04);
+  color: #c0c8d8; transition: all 0.2s;
+  text-align: left; font-size: 0.95rem;
+}
+.quiz-option:hover { border-color: #4da6ff; background: rgba(30,144,255,0.1); }
+.quiz-option.correct {
+  border-color: #00c853; background: rgba(0,200,83,0.12); color: #00c853;
+}
+.quiz-option.wrong {
+  border-color: #ff5252; background: rgba(255,82,82,0.12); color: #ff5252;
+}
+.quiz-option:disabled { pointer-events: none; }
+.quiz-feedback {
+  margin-top: 16px; padding: 12px 16px; border-radius: 10px;
+  font-size: 0.9rem; display: none;
+}
+.quiz-feedback.show { display: block; }
+.quiz-feedback.correct-fb { background: rgba(0,200,83,0.08); color: #69f0ae; }
+.quiz-feedback.wrong-fb { background: rgba(255,82,82,0.08); color: #ff8a80; }
+.quiz-next {
+  margin-top: 20px; padding: 10px 28px;
+  border-radius: 8px; border: none; cursor: pointer;
+  background: #1e90ff; color: #fff; font-size: 0.95rem;
+  transition: background 0.2s; display: none;
+}
+.quiz-next.show { display: inline-block; }
+.quiz-next:hover { background: #1976d2; }
+.quiz-result { text-align: center; display: none; }
+.quiz-result.show { display: block; }
+.quiz-result .score {
+  font-size: 3rem; font-weight: 800; color: #ffc107;
+}
+.quiz-result p { color: #c0c8d8; margin-top: 8px; }
+.quiz-restart {
+  margin-top: 16px; padding: 10px 28px; border-radius: 8px;
+  border: 1px solid #4da6ff; cursor: pointer;
+  background: transparent; color: #4da6ff; font-size: 0.95rem;
+  transition: all 0.2s;
+}
+.quiz-restart:hover { background: rgba(30,144,255,0.1); }
+
+/* ===== About Section ===== */
+.about-section {
+  position: relative; z-index: 1;
+  max-width: 800px; margin: 0 auto; padding: 40px 24px 80px;
+}
+.about-card {
+  background: rgba(15,20,50,0.8);
+  border: 1px solid rgba(30,144,255,0.12);
+  border-radius: 16px; padding: 36px 32px;
+  text-align: center;
+}
+.about-card h2 { font-size: 1.4rem; color: #fff; margin-bottom: 12px; }
+.about-card p { color: #9098b8; font-size: 0.95rem; max-width: 500px; margin: 0 auto; }
+.about-card .team-tag {
+  display: inline-block; margin-top: 16px; padding: 6px 18px;
+  border-radius: 20px; font-size: 0.85rem;
+  background: rgba(255,193,7,0.1); color: #ffc107;
+  border: 1px solid rgba(255,193,7,0.2);
+}
+
+/* ===== Footer ===== */
+.footer {
+  position: relative; z-index: 1;
+  text-align: center; padding: 32px 24px;
+  border-top: 1px solid rgba(30,144,255,0.1);
+  color: #606880; font-size: 0.8rem;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .hero { padding: 100px 20px 60px; }
+  .hero h1 { font-size: 1.8rem; }
+  .hero p { font-size: 1rem; }
+  .hero-stats { gap: 24px; }
+  .cards-grid { grid-template-columns: 1fr; }
+  .nav-links { gap: 14px; }
+  .nav-links a { font-size: 0.8rem; }
+  .modal { padding: 28px 20px; }
+}
+</style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="bg-glow"></div>
+
+<!-- Navigation -->
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="nav-logo">⚡ 电气<span>知多少</span></div>
+    <ul class="nav-links">
+      <li><a href="#topics">科普主题</a></li>
+      <li><a href="#quiz">知识测验</a></li>
+      <li><a href="#about">关于我们</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-badge">🔬 电气工程 × 科普宣传</div>
+  <h1>生活中的<span class="accent">电气</span>知识</h1>
+  <p>从手机充电到智能家居，从一度电的旅程到电磁辐射的真相——用专业知识为你揭开电气世界的奥秘。</p>
+  <div class="hero-stats">
+    <div class="hero-stat"><div class="num">6</div><div class="label">科普主题</div></div>
+    <div class="hero-stat"><div class="num">8</div><div class="label">趣味问答</div></div>
+    <div class="hero-stat"><div class="num">∞</div><div class="label">生活应用</div></div>
+  </div>
+</section>
+
+<!-- Topics Section -->
+<section class="topics-section" id="topics">
+  <div class="section-title">
+    <h2>📚 六大科普主题</h2>
+    <p>点击任意卡片，深入了解电气知识</p>
+  </div>
+  <div class="cards-grid">
+
+    <!-- Card 1 -->
+    <div class="card" onclick="openTopic(1)">
+      <div class="card-icon">⚡</div>
+      <h3>一度电的旅程</h3>
+      <p>从发电厂到你家插座，一度电经历了怎样的"长途旅行"？了解电力系统的四大环节。</p>
+      <span class="card-tag">电力系统</span>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="card" onclick="openTopic(2)">
+      <div class="card-icon">🔌</div>
+      <h3>手机快充的秘密</h3>
+      <p>从"五福一安"到百瓦快充，充电头里藏着怎样的黑科技？GaN又是何方神圣？</p>
+      <span class="card-tag">电力电子</span>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="card" onclick="openTopic(3)">
+      <div class="card-icon">🧠</div>
+      <h3>单片机：家电的大脑</h3>
+      <p>洗衣机为什么会"判断"水位？微波炉怎么知道该加热多久？单片机无处不在。</p>
+      <span class="card-tag">嵌入式</span>
+    </div>
+
+    <!-- Card 4 -->
+    <div class="card" onclick="openTopic(4)">
+      <div class="card-icon">🏠</div>
+      <h3>智能家电如何"智能"</h3>
+      <p>一声"打开空调"背后有多少技术？WiFi模组、传感器、云平台如何协作？</p>
+      <span class="card-tag">物联网</span>
+    </div>
+
+    <!-- Card 5 -->
+    <div class="card" onclick="openTopic(5)">
+      <div class="card-icon">📡</div>
+      <h3>电磁辐射的真相</h3>
+      <p>手机辐射致癌？高压线附近不能住人？5G基站有危害？用科学破除常见谣言。</p>
+      <span class="card-tag">辟谣</span>
+    </div>
+
+    <!-- Card 6 -->
+    <div class="card" onclick="openTopic(6)">
+      <div class="card-icon">🔋</div>
+      <h3>锂电池安全指南</h3>
+      <p>电动车电池为什么会起火？充电宝鼓包了还能用吗？学会安全使用锂电池。</p>
+      <span class="card-tag">安全</span>
+    </div>
+
+  </div>
+</section>
+
+<!-- Quiz Section -->
+<section class="quiz-section" id="quiz">
+  <div class="section-title">
+    <h2>🧪 科普知识小测验</h2>
+    <p>测测你对电气知识了解多少</p>
+  </div>
+  <div class="quiz-card">
+    <div class="quiz-progress" id="quizProgress">第 1 / 8 题</div>
+    <div class="quiz-question" id="quizQuestion"></div>
+    <div class="quiz-options" id="quizOptions"></div>
+    <div class="quiz-feedback" id="quizFeedback"></div>
+    <button class="quiz-next" id="quizNext" onclick="nextQuestion()">下一题 →</button>
+    <div class="quiz-result" id="quizResult"></div>
+  </div>
+</section>
+
+<!-- About Section -->
+<section class="about-section" id="about">
+  <div class="about-card">
+    <h2>🙋 关于我们</h2>
+    <p>我们是中国石油大学（华东）电气工程及其自动化专业的学生团队。</p>
+    <p style="margin-top:8px;">本次科普宣传是《思想政治理论课社会实践》"专业报国行"模块的实践活动，旨在用专业知识服务社会，让电气知识走进日常生活。</p>
+    <div class="team-tag">🏫 中国石油大学（华东） · 新能源学院 · 电气工程</div>
+  </div>
+</section>
+
+<!-- Footer -->
+<div class="footer">
+  © 2026 电气知多少科普团队 | 中国石油大学（华东）思想政治理论课社会实践 · 专业报国行
+</div>
+
+<!-- Topic Detail Modal -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeTopic(event)">
+  <div class="modal" id="modalContent" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeTopic()">✕</button>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+// ===== Topic Data =====
+const topics = {
+  1: {
+    title: '一度电的旅程',
+    subtitle: '发电 → 输电 → 配电 → 用电',
+    icon: '⚡',
+    sections: [
+      { type: 'p', text: '当你按下开关，灯亮了——这一瞬间，一度电可能已经从几百公里外的发电厂长途跋涉而来。一度电（1千瓦时）能让一台空调运行约1小时，或者给手机充满约50次。那么，它是怎么来到你家的呢？' },
+      { type: 'h3', text: '第一站：发电厂——电的"出生地"' },
+      { type: 'p', text: '目前我国的电力来源主要包括：火力发电（约占60-70%，燃煤/燃气）、水力发电（约占15-18%，三峡水电站是世界上最大的水电站）、核能发电（约占5%）、风力发电和太阳能发电（快速增长的清洁能源）。发电机利用电磁感应原理——线圈在磁场中旋转，将机械能转化为电能。发出的电通常是交流电（AC），频率为50Hz。' },
+      { type: 'h3', text: '第二站：升压变电站——"加速上高速"' },
+      { type: 'p', text: '为了减少长距离输送中的电能损耗（线路损耗与电流的平方成正比），需要将电压升高到110kV、220kV、500kV甚至1000kV特高压。我国拥有世界上最先进的特高压输电技术，西电东送工程每年将西部清洁能源输送到东部用电大省。' },
+      { type: 'h3', text: '第三站：配电网——"下高速到家门口"' },
+      { type: 'p', text: '高压电到达城市后，经过多级降压变电站（220kV→110kV→10kV→380V/220V），最终以220V（单相）/380V（三相）送到千家万户。你家楼下的配电房，就是电力的"最后一公里"。' },
+      { type: 'h3', text: '第四站：你家的插座——"终点站"' },
+      { type: 'p', text: '220V交流电进入你家，经过电表计量，分配到各个插座和开关。当你插入充电器时，充电头内的AC-DC变换电路将交流电转换为手机需要的低压直流电。下一期，我们来聊聊这个神奇的小方块——快充充电头。' },
+      { type: 'diagram', id: 'power-flow' },
+    ]
+  },
+  2: {
+    title: '手机快充的秘密',
+    subtitle: '从5W到240W，充电技术如何进化？',
+    icon: '🔌',
+    sections: [
+      { type: 'p', text: '还记得"五福一安"（5V/1A，仅5W）的年代吗？如今手机快充功率已达240W，充满一部手机只需不到10分钟。这背后是电力电子技术的巨大进步。' },
+      { type: 'h3', text: '快充的核心：更大的功率' },
+      { type: 'p', text: '功率（P）= 电压（V）× 电流（I）。要提高充电速度，要么升高电压，要么增大电流，或者两者同时提升。这就诞生了三种主流快充方案：高压低电流（如QC快充，9V/2A=18W）；低压大电流（如OPPO VOOC，5V/4A=20W）；高压大电流（如USB-PD 3.1，最高48V/5A=240W）。' },
+      { type: 'h3', text: 'USB-PD协议：统一的"快充语言"' },
+      { type: 'p', text: '过去各家快充互不兼容，A品牌的快充头给B品牌手机只能慢充。USB Power Delivery（PD）协议建立了统一的充电标准：充电器和手机通过数据线通信，手机"告诉"充电器自己需要多大的电压和电流，充电器据此调整输出。这就像两个人先用对讲机商量好，再开始配合工作。' },
+      { type: 'h3', text: 'GaN氮化镓：充电头的"瘦身神器"' },
+      { type: 'p', text: '传统的充电头使用硅（Si）半导体，工作时发热较大，需要大体积散热。氮化镓（GaN）是一种第三代半导体材料（宽禁带半导体），开关频率更高、发热更少、耐压更高。用GaN做的充电头，同等功率下体积只有传统的一半，这就是为什么现在的65W快充头反而比以前5W的还要小巧。' },
+      { type: 'h3', text: 'AC-DC变换：充电头的工作原理' },
+      { type: 'p', text: '充电头的核心任务是将220V交流电（AC）转换为手机需要的低压直流电（DC），分为三步：①整流——将交流电变成脉动直流；②高频开关变换——通过PWM控制开关管高速通断，配合变压器降压；③滤波稳压——将电压稳定在目标值，滤除杂波。整个过程在指甲盖大小的芯片控制下完成，效率可达90%以上。' },
+      { type: 'diagram', id: 'charger-flow' },
+    ]
+  },
+  3: {
+    title: '单片机：家电的大脑',
+    subtitle: '藏在每一台家电里的微型计算机',
+    icon: '🧠',
+    sections: [
+      { type: 'p', text: '你家里的洗衣机、空调、微波炉、电磁炉、电饭煲……几乎每一台家电里，都藏着一颗"大脑"——单片机（MCU，Microcontroller Unit）。它是一种把CPU、内存、输入输出接口集成在一块芯片上的微型计算机，成本可能只要几毛钱到几块钱。' },
+      { type: 'h3', text: '单片机 vs 电脑CPU：有什么不同？' },
+      { type: 'p', text: '电脑CPU追求高性能、可以运行操作系统和复杂软件，功耗几十瓦到上百瓦。单片机则是"够用就好"——专门为特定控制任务设计，功耗低至毫瓦级，成本极低，可靠性高。一块STM32单片机的主频可能只有72MHz（电脑是3-5GHz），但对于控制一台洗衣机来说绰绰有余。' },
+      { type: 'h3', text: '洗衣机里的单片机在做什么？' },
+      { type: 'p', text: '你按下"标准洗"按钮后：①单片机接收按键输入，确定洗涤模式；②控制进水阀打开，通过水位传感器判断水量是否足够；③驱动电机正反转，执行"揉搓"动作；④根据温度传感器数据，决定是否启动加热；⑤定时器控制每个阶段的时间；⑥漂洗、脱水，循环执行直到完成。整个过程由几十行到几百行C语言程序控制。' },
+      { type: 'h3', text: '单片机的"感官"和"手脚"' },
+      { type: 'p', text: '传感器（感官）：温度传感器、湿度传感器、水位传感器、霍尔传感器（测转速）、红外传感器等；执行器（手脚）：继电器（控制220V通断）、电机驱动、电磁阀、蜂鸣器、LED/LCD显示。单片机的核心工作就是：读取传感器数据→执行程序逻辑→控制执行器动作——不断循环这个过程。' },
+      { type: 'h3', text: '国产单片机的崛起' },
+      { type: 'p', text: '你可能不知道，很多家电里的单片机是国产的。像GD32（兆易创新）、ESP32（乐鑫科技）、HC32（华大半导体）等国产品牌，在家电、物联网领域占据了大量市场份额。美国芯片禁令反而加速了国产MCU的研发和应用。' },
+      { type: 'diagram', id: 'mcu-flow' },
+    ]
+  },
+  4: {
+    title: '智能家电如何"智能"',
+    subtitle: 'IoT技术让家电有了"网感"',
+    icon: '🏠',
+    sections: [
+      { type: 'p', text: '以前的家电只能手动操作。现在的智能家电可以用手机远程控制、语音操控、甚至"自己学习"你的使用习惯。这背后是物联网（IoT）、传感器和云计算技术的结合。' },
+      { type: 'h3', text: '智能家电的"四层架构"' },
+      { type: 'p', text: '①感知层：各类传感器（温度、湿度、光线、人体感应、门磁等）采集环境数据；②网络层：WiFi模组（如ESP32）或蓝牙/Zigbee模块将数据传输到路由器，再连接到互联网；③平台层：云端服务器接收、存储和处理数据，运行AI算法；④应用层：手机App或智能音箱（如小爱同学、天猫精灵）提供用户交互界面。' },
+      { type: 'h3', text: '一句话"打开空调"经历了什么？' },
+      { type: 'p', text: '你对着智能音箱说"把空调调到26度"→音箱的麦克风阵列采集语音→本地降噪处理后上传到云端→云端语音识别（ASR）将语音转为文字→自然语言处理（NLP）理解意图→云端通过API向空调厂商的云平台发送指令→空调厂商云平台通过MQTT协议将指令推送到你家的WiFi模组→空调内的单片机收到指令，控制压缩机运转。整个过程不到1秒！' },
+      { type: 'h3', text: 'WiFi模组：智能家电的"网卡"' },
+      { type: 'p', text: '你家智能家电里，通常有一个小小的WiFi模组（最常见的是基于ESP32/ESP8266芯片），它负责：连接家庭WiFi路由器；与云端服务器保持长连接（MQTT协议）；接收云端下发的指令，通过串口传给主控单片机；将家电状态上报到云端。这个模组成本不到10元，但让一台普通家电变成了"智能"家电。' },
+      { type: 'h3', text: 'Matter协议：打破品牌壁垒' },
+      { type: 'p', text: '以前买小米的智能灯只能用小米App控制，买海尔的空调只能用海尔App——就像每个品牌都说自己的"方言"。Matter协议（由苹果、谷歌、亚马逊等联合制定）试图建立一个统一的智能家居"普通话"，让不同品牌设备可以互联互通。这对消费者来说是个好消息。' },
+      { type: 'diagram', id: 'iot-flow' },
+    ]
+  },
+  5: {
+    title: '电磁辐射的真相',
+    subtitle: '用科学破除生活中的常见谣言',
+    icon: '📡',
+    sections: [
+      { type: 'p', text: '"手机辐射致癌""高压线附近不能住人""5G基站辐射大"——这些说法你一定听过。今天我们用电气专业知识来一一解答：哪些是真的需要担心，哪些是毫无科学依据的谣言。' },
+      { type: 'h3', text: '电离辐射 vs 非电离辐射：天壤之别' },
+      { type: 'p', text: '辐射分为两大类。电离辐射（如X射线、γ射线、核辐射）频率极高，光子能量足以击穿原子外层电子，破坏DNA分子——这才是真正致癌的辐射。非电离辐射（如手机信号、WiFi、广播、可见光、红外线）频率较低，光子能量远不足以破坏分子结构，只能产生热效应。手机和基站的电磁波属于非电离辐射，能量比可见光还低好几个数量级——你晒太阳受到的辐射能量远比手机信号强。' },
+      { type: 'h3', text: '谣言粉碎机①：手机辐射不致癌' },
+      { type: 'p', text: '世界卫生组织下属的国际癌症研究机构（IARC）将手机辐射列为"2B类"（可能致癌），但注意——咖啡、泡菜也属于2B类。这意味着"证据有限，不能排除可能性"，而不是"已证实致癌"。全球几十年研究，未发现手机使用与脑瘤发病率上升之间的因果关系。手机的最大SAR值（比吸收率）在中国标准要求不超过2.0W/kg，实际产品通常远低于此。' },
+      { type: 'h3', text: '谣言粉碎机②：高压线不影响健康' },
+      { type: 'p', text: '高压线产生的工频磁场（50Hz）强度随距离迅速衰减：在高压线正下方约0.1-1μT（微特斯拉），距离30米外已接近地球自身磁场（约50μT）。世界卫生组织明确指出：没有实质性证据表明极低频电磁场会对健康造成危害。高压线附近居民最需要注意的是——不要在线下放风筝、钓鱼，触碰高压线才是真正的危险。' },
+      { type: 'h3', text: '谣言粉碎机③：5G基站辐射可控' },
+      { type: 'p', text: '中国的基站电磁辐射标准（GB 8702-2014）比国际标准更严格：功率密度限制为0.4W/m²（国际ICNIRP标准为10W/m²），比国际标准严格25倍。基站天线有方向性，能量集中在水平方向传播，正下方反而是"盲区"。实际上，手机在信号差时会自动提高发射功率，基站越多、信号越好，手机辐射反而越小。' },
+      { type: 'h3', text: '真正需要注意的电磁安全' },
+      { type: 'p', text: '电磁炉工作时产生大功率交变磁场，心脏起搏器佩戴者应保持50cm以上距离。微波炉如果门封损坏可能泄漏微波（频率2.45GHz），需定期检查。雷雨天避免使用有线电话和接触金属水管。科学防护，不恐慌，不忽视。' },
+    ]
+  },
+  6: {
+    title: '锂电池安全使用指南',
+    subtitle: '了解锂电池，安全每一天',
+    icon: '🔋',
+    sections: [
+      { type: 'p', text: '从手机、笔记本到电动车、充电宝，锂电池几乎无处不在。但新闻中电动车电池起火、充电宝爆炸的事件时有发生。锂电池为什么危险？如何安全使用？' },
+      { type: 'h3', text: '锂电池是怎么工作的？' },
+      { type: 'p', text: '锂电池（锂离子电池）通过锂离子在正负极之间的"摇摆"来充放电：充电时，锂离子从正极（如钴酸锂、磷酸铁锂）脱出，经过电解液，嵌入负极石墨层中，电子通过外部电路从正极流向负极；放电时反过来，锂离子从负极回到正极，电子经外部电路做功。' },
+      { type: 'h3', text: '锂电池为什么危险？' },
+      { type: 'p', text: '主要来自三个方面：①热失控——电池内部短路或过充导致温度急剧升高（可达数百°C），电解液分解产生可燃气体，最终起火爆炸；②锂枝晶——长期不当使用后，负极表面可能长出针状锂枝晶，刺穿隔膜导致内部短路；③机械损伤——被挤压、刺穿、弯折后，隔膜破裂，正负极直接接触短路。' },
+      { type: 'h3', text: '安全使用指南' },
+      { type: 'p', text: '✅ 使用原装或认证充电器，避免劣质充电头电压不稳；✅ 充电时不要将手机放在枕头下或被子里（散热不良会加速电池老化）；✅ 充电宝鼓包了立即停止使用，不要刺破或挤压（鼓包=内部产气，随时可能热失控）；✅ 电动车不要在室内充电，尤其不要在楼道、卧室充电（一旦起火，逃生时间极短）；✅ 不要将充电宝、电动车电池长时间放在暴晒的车内（高温会加速电解液分解）；✅ 发现电池异常发热、鼓包、漏液，立即停止使用并妥善回收。' },
+      { type: 'h3', text: '快充到底伤不伤电池？' },
+      { type: 'p', text: '答案是：正常使用不伤，但确实会加速老化。快充时电流大，电池内部温度升高，电解液副反应加速——这是无法避免的物理化学规律。但厂商在软件层面做了大量优化（如温度监控、分段充电策略），确保在电池寿命周期内（通常500次循环后保持80%容量）快充不会造成异常衰减。所以放心用快充，但尽量别边充电边玩游戏（过热才是电池真正的杀手）。' },
+    ]
+  }
+};
+
+// ===== Modal Functions =====
+function openTopic(id) {
+  const t = topics[id];
+  let html = `<h2>${t.icon} ${t.title}</h2><div class="subtitle">${t.subtitle}</div>`;
+  for (const sec of t.sections) {
+    if (sec.type === 'h3') html += `<h3>${sec.text}</h3>`;
+    else if (sec.type === 'p') html += `<p>${sec.text}</p>`;
+    else if (sec.type === 'diagram') html += getDiagram(sec.id);
+  }
+  document.getElementById('modalBody').innerHTML = html;
+  document.getElementById('modalOverlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeTopic(e) {
+  if (e && e.target !== document.getElementById('modalOverlay')) return;
+  document.getElementById('modalOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+// ===== SVG Diagrams =====
+function getDiagram(id) {
+  const diagrams = {
+    'power-flow': `
+      <div class="diagram">
+        <svg viewBox="0 0 700 180" width="700" height="180">
+          <!-- Arrows and boxes -->
+          <rect x="10" y="50" width="90" height="60" rx="10" fill="rgba(255,193,7,0.15)" stroke="rgba(255,193,7,0.4)"/>
+          <text x="55" y="78" text-anchor="middle" fill="#ffc107" font-size="13" font-weight="700">发电厂</text>
+          <text x="55" y="96" text-anchor="middle" fill="#9098b8" font-size="10">机械能→电能</text>
+
+          <line x1="100" y1="80" x2="150" y2="80" stroke="#4da6ff" stroke-width="2" marker-end="url(#arrowBlue)"/>
+
+          <rect x="155" y="40" width="110" height="60" rx="10" fill="rgba(30,144,255,0.1)" stroke="rgba(30,144,255,0.3)"/>
+          <text x="210" y="68" text-anchor="middle" fill="#4da6ff" font-size="13" font-weight="700">升压变电站</text>
+          <text x="210" y="86" text-anchor="middle" fill="#9098b8" font-size="10">→110kV~1000kV</text>
+
+          <line x1="265" y1="70" x2="315" y2="70" stroke="#4da6ff" stroke-width="2" marker-end="url(#arrowBlue)"/>
+
+          <rect x="320" y="50" width="110" height="60" rx="10" fill="rgba(30,144,255,0.1)" stroke="rgba(30,144,255,0.3)"/>
+          <text x="375" y="72" text-anchor="middle" fill="#4da6ff" font-size="13" font-weight="700">输电线路</text>
+          <text x="375" y="90" text-anchor="middle" fill="#9098b8" font-size="10">特高压/高压</text>
+
+          <line x1="430" y1="70" x2="480" y2="70" stroke="#4da6ff" stroke-width="2" marker-end="url(#arrowBlue)"/>
+
+          <rect x="485" y="40" width="110" height="60" rx="10" fill="rgba(30,144,255,0.1)" stroke="rgba(30,144,255,0.3)"/>
+          <text x="540" y="68" text-anchor="middle" fill="#4da6ff" font-size="13" font-weight="700">降压配电网</text>
+          <text x="540" y="86" text-anchor="middle" fill="#9098b8" font-size="10">→220V/380V</text>
+
+          <line x1="595" y1="70" x2="640" y2="70" stroke="#4da6ff" stroke-width="2" marker-end="url(#arrowBlue)"/>
+
+          <rect x="640" y="50" width="50" height="60" rx="10" fill="rgba(0,200,83,0.1)" stroke="rgba(0,200,83,0.4)"/>
+          <text x="665" y="85" text-anchor="middle" fill="#00c853" font-size="13" font-weight="700">到家</text>
+
+          <!-- Labels -->
+          <text x="145" y="130" fill="#9098b8" font-size="10" text-anchor="middle">发电</text>
+          <text x="265" y="130" fill="#9098b8" font-size="10" text-anchor="middle">升压</text>
+          <text x="375" y="130" fill="#9098b8" font-size="10" text-anchor="middle">输电</text>
+          <text x="540" y="130" fill="#9098b8" font-size="10" text-anchor="middle">配电</text>
+          <text x="665" y="130" fill="#9098b8" font-size="10" text-anchor="middle">用电</text>
+
+          <defs>
+            <marker id="arrowBlue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+              <path d="M0,0 L10,5 L0,10 Z" fill="#4da6ff"/>
+            </marker>
+          </defs>
+        </svg>
+        <div class="diagram-label">▲ 电力系统四大环节：发电 → 升压 → 输电 → 配电 → 用电</div>
+      </div>
+    `,
+    'charger-flow': `
+      <div class="diagram">
+        <svg viewBox="0 0 650 220" width="650" height="220">
+          <rect x="15" y="30" width="90" height="50" rx="8" fill="rgba(255,193,7,0.12)" stroke="rgba(255,193,7,0.35)"/>
+          <text x="60" y="55" text-anchor="middle" fill="#ffc107" font-size="12" font-weight="700">~220V</text>
+          <text x="60" y="70" text-anchor="middle" fill="#9098b8" font-size="10">交流电(50Hz)</text>
+
+          <line x1="105" y1="55" x2="145" y2="55" stroke="#4da6ff" stroke-width="2" marker-end="url(#ab2)"/>
+
+          <rect x="150" y="20" width="120" height="60" rx="8" fill="rgba(30,144,255,0.08)" stroke="rgba(30,144,255,0.25)"/>
+          <text x="210" y="44" text-anchor="middle" fill="#4da6ff" font-size="12" font-weight="700">① 整流滤波</text>
+          <text x="210" y="62" text-anchor="middle" fill="#9098b8" font-size="10">AC → 脉动DC</text>
+          <text x="210" y="76" text-anchor="middle" fill="#9098b8" font-size="10">桥式整流+电容</text>
+
+          <line x1="270" y1="50" x2="310" y2="50" stroke="#4da6ff" stroke-width="2" marker-end="url(#ab2)"/>
+
+          <rect x="315" y="40" width="120" height="60" rx="8" fill="rgba(30,144,255,0.08)" stroke="rgba(30,144,255,0.25)"/>
+          <text x="375" y="56" text-anchor="middle" fill="#4da6ff" font-size="12" font-weight="700">② 高频开关</text>
+          <text x="375" y="72" text-anchor="middle" fill="#9098b8" font-size="10">DC→高频AC</text>
+          <text x="375" y="88" text-anchor="middle" fill="#9098b8" font-size="10">PWM GaN/Si MOS</text>
+
+          <line x1="435" y1="70" x2="475" y2="70" stroke="#4da6ff" stroke-width="2" marker-end="url(#ab2)"/>
+
+          <rect x="480" y="35" width="120" height="60" rx="8" fill="rgba(30,144,255,0.08)" stroke="rgba(30,144,255,0.25)"/>
+          <text x="540" y="56" text-anchor="middle" fill="#4da6ff" font-size="12" font-weight="700">③ 稳压输出</text>
+          <text x="540" y="72" text-anchor="middle" fill="#9098b8" font-size="10">滤波+反馈</text>
+          <text x="540" y="88" text-anchor="middle" fill="#9098b8" font-size="10">USB-PD协议</text>
+
+          <line x1="600" y1="65" x2="632" y2="65" stroke="#00c853" stroke-width="2" marker-end="url(#ag)"/>
+
+          <rect x="632" y="40" width="15" height="40" rx="3" fill="rgba(0,200,83,0.15)" stroke="rgba(0,200,83,0.4)"/>
+          <text x="639" y="100" text-anchor="middle" fill="#00c853" font-size="11" font-weight="700">手机</text>
+
+          <text x="355" y="140" text-anchor="middle" fill="#9098b8" font-size="11">▲ 充电头将220V交流电转换为手机需要的低压直流电</text>
+
+          <!-- GaN callout -->
+          <rect x="190" y="155" width="270" height="42" rx="8" fill="rgba(255,193,7,0.06)" stroke="rgba(255,193,7,0.2)"/>
+          <text x="325" y="173" text-anchor="middle" fill="#ffc107" font-size="11">💡 GaN氮化镓：开关频率更高→变压器更小→充电头更小</text>
+          <text x="325" y="189" text-anchor="middle" fill="#9098b8" font-size="10">第三代半导体 | 禁带宽度3.4eV(vs Si 1.1eV) | 耐压高 | 发热少</text>
+
+          <defs>
+            <marker id="ab2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#4da6ff"/></marker>
+            <marker id="ag" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#00c853"/></marker>
+          </defs>
+        </svg>
+        <div class="diagram-label">▲ 充电头内部工作原理：整流 → 开关变换 → 稳压输出</div>
+      </div>
+    `,
+    'mcu-flow': `
+      <div class="diagram">
+        <svg viewBox="0 0 600 220" width="600" height="220">
+          <!-- MCU center -->
+          <rect x="220" y="60" width="160" height="80" rx="12" fill="rgba(255,193,7,0.1)" stroke="rgba(255,193,7,0.4)"/>
+          <text x="300" y="90" text-anchor="middle" fill="#ffc107" font-size="14" font-weight="700">单片机 MCU</text>
+          <text x="300" y="108" text-anchor="middle" fill="#9098b8" font-size="10">CPU + 内存 + IO</text>
+          <text x="300" y="124" text-anchor="middle" fill="#9098b8" font-size="10">几毛~几块钱/片</text>
+
+          <!-- Inputs -->
+          <rect x="15" y="20" width="110" height="40" rx="6" fill="rgba(30,144,255,0.08)" stroke="rgba(30,144,255,0.2)"/>
+          <text x="70" y="44" text-anchor="middle" fill="#4da6ff" font-size="11">按键/触摸输入</text>
+          <line x1="125" y1="40" x2="220" y2="75" stroke="#4da6ff" stroke-width="1.5" marker-end="url(#ab3)"/>
+
+          <rect x="15" y="75" width="110" height="40" rx="6" fill="rgba(30,144,255,0.08)" stroke="rgba(30,144,255,0.2)"/>
+          <text x="70" y="99" text-anchor="middle" fill="#4da6ff" font-size="11">温度/水位传感器</text>
+          <line x1="125" y1="95" x2="220" y2="100" stroke="#4da6ff" stroke-width="1.5" marker-end="url(#ab3)"/>
+
+          <rect x="15" y="130" width="110" height="40" rx="6" fill="rgba(30,144,255,0.08)" stroke="rgba(30,144,255,0.2)"/>
+          <text x="70" y="154" text-anchor="middle" fill="#4da6ff" font-size="11">定时/计数信号</text>
+          <line x1="125" y1="150" x2="220" y2="125" stroke="#4da6ff" stroke-width="1.5" marker-end="url(#ab3)"/>
+
+          <!-- Outputs -->
+          <rect x="460" y="20" width="125" height="40" rx="6" fill="rgba(0,200,83,0.08)" stroke="rgba(0,200,83,0.2)"/>
+          <text x="522" y="44" text-anchor="middle" fill="#00c853" font-size="11">电机控制(PWM)</text>
+          <line x1="380" y1="70" x2="460" y2="40" stroke="#00c853" stroke-width="1.5" marker-end="url(#ag3)"/>
+
+          <rect x="460" y="75" width="125" height="40" rx="6" fill="rgba(0,200,83,0.08)" stroke="rgba(0,200,83,0.2)"/>
+          <text x="522" y="99" text-anchor="middle" fill="#00c853" font-size="11">继电器/电磁阀</text>
+          <line x1="380" y1="100" x2="460" y2="95" stroke="#00c853" stroke-width="1.5" marker-end="url(#ag3)"/>
+
+          <rect x="460" y="130" width="125" height="40" rx="6" fill="rgba(0,200,83,0.08)" stroke="rgba(0,200,83,0.2)"/>
+          <text x="522" y="154" text-anchor="middle" fill="#00c853" font-size="11">LED/蜂鸣器/显示</text>
+          <line x1="380" y1="125" x2="460" y2="150" stroke="#00c853" stroke-width="1.5" marker-end="url(#ag3)"/>
+
+          <!-- Loop arrow -->
+          <path d="M300 145 L300 185 Q300 200 280 200 L80 200 L80 175" fill="none" stroke="#ffc107" stroke-width="1.5" stroke-dasharray="5,3"/>
+          <text x="190" y="210" text-anchor="middle" fill="#ffc107" font-size="10">循环：读取→判断→控制→读取→...</text>
+
+          <defs>
+            <marker id="ab3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#4da6ff"/></marker>
+            <marker id="ag3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#00c853"/></marker>
+          </defs>
+        </svg>
+        <div class="diagram-label">▲ 单片机工作流程：传感器输入 → MCU处理 → 执行器输出，不断循环</div>
+      </div>
+    `,
+    'iot-flow': `
+      <div class="diagram">
+        <svg viewBox="0 0 650 240" width="650" height="240">
+          <!-- User -->
+          <circle cx="40" cy="50" r="22" fill="rgba(30,144,255,0.1)" stroke="rgba(30,144,255,0.3)"/>
+          <text x="40" y="46" text-anchor="middle" font-size="18">👤</text>
+          <text x="40" y="84" text-anchor="middle" fill="#9098b8" font-size="10">用户</text>
+
+          <!-- Smart Speaker -->
+          <rect x="100" y="25" width="100" height="50" rx="8" fill="rgba(255,193,7,0.08)" stroke="rgba(255,193,7,0.25)"/>
+          <text x="150" y="48" text-anchor="middle" fill="#ffc107" font-size="11" font-weight="700">智能音箱</text>
+          <text x="150" y="65" text-anchor="middle" fill="#9098b8" font-size="9">语音采集+降噪</text>
+
+          <line x1="62" y1="50" x2="100" y2="50" stroke="#ffc107" stroke-width="1.5" marker-end="url(#ay)"/>
+
+          <!-- Cloud -->
+          <rect x="250" y="20" width="130" height="60" rx="30" fill="rgba(30,144,255,0.08)" stroke="rgba(30,144,255,0.25)"/>
+          <text x="315" y="44" text-anchor="middle" fill="#4da6ff" font-size="11" font-weight="700">云端平台</text>
+          <text x="315" y="60" text-anchor="middle" fill="#9098b8" font-size="9">ASR→NLP→API</text>
+          <text x="315" y="75" text-anchor="middle" fill="#9098b8" font-size="9">MQTT消息推送</text>
+
+          <line x1="200" y1="50" x2="250" y2="50" stroke="#4da6ff" stroke-width="1.5" marker-end="url(#ab4)"/>
+
+          <!-- Router -->
+          <rect x="425" y="25" width="70" height="50" rx="8" fill="rgba(30,144,255,0.06)" stroke="rgba(30,144,255,0.2)"/>
+          <text x="460" y="48" text-anchor="middle" fill="#9098b8" font-size="10">WiFi</text>
+          <text x="460" y="65" text-anchor="middle" fill="#9098b8" font-size="9">路由器</text>
+
+          <line x1="380" y1="50" x2="425" y2="50" stroke="#4da6ff" stroke-width="1.5" marker-end="url(#ab4)"/>
+
+          <!-- Appliance -->
+          <rect x="535" y="20" width="105" height="60" rx="8" fill="rgba(0,200,83,0.08)" stroke="rgba(0,200,83,0.25)"/>
+          <text x="587" y="44" text-anchor="middle" fill="#00c853" font-size="11" font-weight="700">智能家电</text>
+          <text x="587" y="60" text-anchor="middle" fill="#9098b8" font-size="9">WiFi模组+MCU</text>
+          <text x="587" y="75" text-anchor="middle" fill="#9098b8" font-size="9">接收指令→执行</text>
+
+          <line x1="495" y1="50" x2="535" y2="50" stroke="#00c853" stroke-width="1.5" marker-end="url(#ag4)"/>
+
+          <!-- Bottom: Architecture layers -->
+          <rect x="30" y="120" width="590" height="105" rx="10" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.05)"/>
+          <text x="325" y="145" text-anchor="middle" fill="#9098b8" font-size="11" font-weight="700">四层 IoT 架构</text>
+
+          <rect x="45" y="155" width="130" height="28" rx="5" fill="rgba(30,144,255,0.08)"/>
+          <text x="110" y="174" text-anchor="middle" fill="#4da6ff" font-size="10">感知层 · 传感器</text>
+
+          <rect x="188" y="155" width="130" height="28" rx="5" fill="rgba(255,193,7,0.08)"/>
+          <text x="253" y="174" text-anchor="middle" fill="#ffc107" font-size="10">网络层 · WiFi/蓝牙</text>
+
+          <rect x="330" y="155" width="130" height="28" rx="5" fill="rgba(156,39,176,0.08)"/>
+          <text x="395" y="174" text-anchor="middle" fill="#ce93d8" font-size="10">平台层 · 云端AI</text>
+
+          <rect x="472" y="155" width="130" height="28" rx="5" fill="rgba(0,200,83,0.08)"/>
+          <text x="537" y="174" text-anchor="middle" fill="#00c853" font-size="10">应用层 · App/音箱</text>
+
+          <text x="325" y="210" text-anchor="middle" fill="#9098b8" font-size="10">Matter协议 → 跨品牌互联互通 | 全程耗时 &lt;1秒</text>
+
+          <defs>
+            <marker id="ay" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#ffc107"/></marker>
+            <marker id="ab4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#4da6ff"/></marker>
+            <marker id="ag4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#00c853"/></marker>
+          </defs>
+        </svg>
+        <div class="diagram-label">▲ 智能家电控制流程：语音 → 云端处理 → 设备执行 + IoT四层架构</div>
+      </div>
+    `
+  };
+  return diagrams[id] || '';
+}
+
+// ===== Quiz =====
+const quizData = [
+  { q: '一度电（1千瓦时）大约能让一台1.5匹空调运行多久？', opts: ['约10分钟', '约1小时', '约5小时', '约24小时'], ans: 1, exp: '1.5匹空调功率约1000-1200W，一度电（1千瓦时）可以运行约1小时。夏天合理设置26°C可以大幅节省用电。' },
+  { q: '以下哪种材料让充电头可以做得更小巧？', opts: ['硅(Si)', '氮化镓(GaN)', '碳化硅(SiC)', '锗(Ge)'], ans: 1, exp: '氮化镓(GaN)是第三代半导体，禁带宽度大(3.4eV)，开关频率高、发热少，同等功率下充电头体积可缩小一半以上。' },
+  { q: '一块单片机芯片的成本大约是多少？', opts: ['0.001元', '几毛到几块钱', '几百元', '几千元'], ans: 1, exp: '家电中使用的单片机(MCU)批量采购价非常低，从几毛钱(简单的8位MCU)到几块钱(32位ARM MCU)不等，所以能在所有家电中普及。' },
+  { q: '以下哪种辐射真正可能对DNA造成损伤？', opts: ['手机信号', 'WiFi信号', 'X射线', '5G基站信号'], ans: 2, exp: '只有X射线等电离辐射的光子能量足以破坏DNA。手机/WiFi/5G属于非电离辐射，能量比可见光还低，不会破坏分子结构。' },
+  { q: '锂电池热失控时内部温度可能达到多少？', opts: ['50-60°C', '80-100°C', '150-200°C', '400°C以上'], ans: 3, exp: '锂电池热失控时内部温度可达400°C以上，电解液分解产生可燃气体，这就是电动车电池起火难以扑灭的原因。' },
+  { q: '中国的基站电磁辐射标准比国际标准严格多少？', opts: ['差不多', '严格约5倍', '严格约25倍', '严格约100倍'], ans: 1, exp: '中国GB 8702-2014标准功率密度限制为0.4W/m²，国际ICNIRP标准为10W/m²，中国标准比国际标准严格约25倍。' },
+  { q: '以下哪个行为对手机电池寿命影响最大？', opts: ['使用快充充电', '边充电边玩游戏', '用非原装充电器', '充到100%后继续插着'], ans: 1, exp: '高温是锂电池最大的敌人。边充电边玩游戏会导致电池同时承受充电发热和放电发热，温度可能超过40°C，加速电解液分解和电池老化。' },
+  { q: '智能家电中用来连接云端的WiFi模组成本大约多少？', opts: ['不到10元', '50-100元', '200-500元', '1000元以上'], ans: 0, exp: '基于ESP32/ESP8266芯片的WiFi模组成本仅需几块钱，加上外围电路也不到10元，这就是为什么越来越多的家电能"联网"的原因。' },
+];
+
+let currentQ = 0, score = 0;
+function loadQuestion() {
+  if (currentQ >= quizData.length) { showResult(); return; }
+  const q = quizData[currentQ];
+  document.getElementById('quizProgress').textContent = `第 ${currentQ + 1} / ${quizData.length} 题`;
+  document.getElementById('quizQuestion').textContent = `Q${currentQ + 1}. ${q.q}`;
+  document.getElementById('quizFeedback').classList.remove('show', 'correct-fb', 'wrong-fb');
+  document.getElementById('quizNext').classList.remove('show');
+  let html = '';
+  q.opts.forEach((opt, i) => {
+    html += `<button class="quiz-option" onclick="answer(${i})">${String.fromCharCode(65+i)}. ${opt}</button>`;
+  });
+  document.getElementById('quizOptions').innerHTML = html;
+}
+
+function answer(idx) {
+  const q = quizData[currentQ];
+  const btns = document.querySelectorAll('.quiz-option');
+  btns.forEach((b, i) => {
+    b.disabled = true;
+    if (i === q.ans) b.classList.add('correct');
+    else if (i === idx && idx !== q.ans) b.classList.add('wrong');
+  });
+  const fb = document.getElementById('quizFeedback');
+  if (idx === q.ans) {
+    score++;
+    fb.className = 'quiz-feedback show correct-fb';
+    fb.textContent = '✅ 回答正确！' + q.exp;
+  } else {
+    fb.className = 'quiz-feedback show wrong-fb';
+    fb.textContent = '❌ 回答错误。' + q.exp;
+  }
+  document.getElementById('quizNext').classList.add('show');
+}
+
+function nextQuestion() {
+  currentQ++;
+  loadQuestion();
+}
+
+function showResult() {
+  document.getElementById('quizProgress').textContent = '';
+  document.getElementById('quizQuestion').textContent = '';
+  document.getElementById('quizOptions').innerHTML = '';
+  document.getElementById('quizFeedback').classList.remove('show');
+  document.getElementById('quizNext').classList.remove('show');
+  const result = document.getElementById('quizResult');
+  result.classList.add('show');
+  const pct = Math.round(score / quizData.length * 100);
+  let msg = '';
+  if (pct >= 87) msg = '🏆 电气知识达人！你对生活中的电气知识了如指掌！';
+  else if (pct >= 62) msg = '👍 不错哦！你已经掌握了相当多的电气常识。';
+  else if (pct >= 37) msg = '📖 还需要加油，欢迎多看几篇我们的科普推文！';
+  else msg = '🔌 电气世界很精彩，从头学起也不晚！';
+  result.innerHTML = `
+    <div class="score">${score}/${quizData.length}</div>
+    <p>正确率 ${pct}%</p>
+    <p style="margin-top:8px">${msg}</p>
+    <button class="quiz-restart" onclick="restartQuiz()">🔄 再来一次</button>
+  `;
+}
+
+function restartQuiz() {
+  currentQ = 0; score = 0;
+  document.getElementById('quizResult').classList.remove('show');
+  loadQuestion();
+}
+
+// Init
+loadQuestion();
+
+// Keyboard ESC to close modal
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    document.getElementById('modalOverlay').classList.remove('active');
+    document.body.style.overflow = '';
+  }
+});
+</script>
+</body>
+</html>
