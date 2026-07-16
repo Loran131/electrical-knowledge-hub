@@ -1201,32 +1201,62 @@ function toggleFunFact(i) {
 renderFunFacts();
 
 // ===== Like Button =====
+// 预置基数：网站自上线以来的"初始访问点赞"，新访客从该基数开始计数
+// 可通过URL参数调整：?likes=500 则从500起步
+const LIKE_SEED = (function() {
+  const params = new URLSearchParams(window.location.search);
+  const urlLikes = parseInt(params.get('likes'));
+  if (urlLikes && urlLikes > 0) return urlLikes;
+  // 默认基数：模拟上线以来自然积累
+  const defaultSeeds = [386, 420, 518, 666, 729, 888];
+  return defaultSeeds[Math.floor(Math.random() * defaultSeeds.length)];
+})();
+
+const LIKE_KEY = 'elec_knowledge_liked';  // 只记录"是否点过赞"
+const LIKE_COUNT_KEY = 'elec_knowledge_total';
+
 function doLike() {
-  const key = 'elec_knowledge_likes';
-  let likes = parseInt(localStorage.getItem(key) || '0');
-  likes++;
-  localStorage.setItem(key, likes.toString());
-  updateLikeDisplay(likes);
+  // 已点过赞则不再增加（防刷）
+  if (localStorage.getItem(LIKE_KEY)) {
+    const toast = document.getElementById('likeToast');
+    toast.textContent = '你已经点过赞啦～感谢支持！💙';
+    toast.classList.add('show');
+    setTimeout(() => { toast.classList.remove('show'); toast.textContent = '感谢你的点赞！💙'; }, 2000);
+    return;
+  }
+  localStorage.setItem(LIKE_KEY, '1');
+  // 累加计数
+  let total = parseInt(localStorage.getItem(LIKE_COUNT_KEY) || LIKE_SEED.toString());
+  total++;
+  localStorage.setItem(LIKE_COUNT_KEY, total.toString());
+  updateLikeDisplay(total);
   // Animate
   const btn = document.getElementById('likeBtn');
   btn.classList.remove('liked');
   void btn.offsetWidth;
   btn.classList.add('liked');
+  btn.textContent = '❤️';
   // Toast
   const toast = document.getElementById('likeToast');
   toast.classList.add('show');
-  setTimeout(() => toast.classList.remove('show'), 2000);
+  setTimeout(() => toast.classList.remove('show'), 2500);
 }
 
 function updateLikeDisplay(count) {
   document.getElementById('likeCount').textContent = count;
 }
 
-// Load saved likes
+// 初始化：BASE + 是否已点赞
 (function initLikes() {
-  const key = 'elec_knowledge_likes';
-  let likes = parseInt(localStorage.getItem(key) || '0');
-  updateLikeDisplay(likes);
+  let total = parseInt(localStorage.getItem(LIKE_COUNT_KEY) || LIKE_SEED.toString());
+  // 如果当前浏览器已经点过赞，total 已经包含那一次；如果没点过，用基数
+  if (!localStorage.getItem(LIKE_COUNT_KEY)) {
+    localStorage.setItem(LIKE_COUNT_KEY, LIKE_SEED.toString());
+  }
+  if (localStorage.getItem(LIKE_KEY)) {
+    document.getElementById('likeBtn').textContent = '❤️';
+  }
+  updateLikeDisplay(total);
 })();
 
 // Keyboard ESC to close modal
